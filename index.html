@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+      }
+      input {
+        padding: 10px;
+        width: 300px;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+      #qrContainer {
+        margin-top: 20px;
+      }
+      img {
+        border: 1px solid #ddd;
+        padding: 10px;
+        width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>QR Code Generator</h2>
+    <input type="text" id="urlInput" placeholder="Enter URL" />
+    <button id="generateButton">Generate QR Code</button>
+
+    <div id="qrContainer">
+      <img id="qrImage" src="http://localhost:3000/qr_code.png" alt="QR Code" />
+    </div>
+
+    <script>
+      document
+        .getElementById("generateButton")
+        .addEventListener("click", async function (event) {
+          const url = document.getElementById("urlInput").value;
+          if (!url) {
+            alert("Please enter a URL!");
+            return;
+          }
+
+          try {
+            const response = await fetch("http://localhost:3000/generate-qr", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url }),
+            });
+
+            const data = await response.json();
+            if (!data.qrPath) {
+              alert("Failed to generate QR code.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while generating the QR code.");
+          }
+        });
+    </script>
+  </body>
+</html>
